@@ -1,6 +1,7 @@
 from .neurons import _SpikeTensor, _SpikeTorchConv, LIF
 import torch
 
+
 class ReluLeaky(LIF):
     """
     First-order leaky integrate-and-fire neuron model.
@@ -176,7 +177,6 @@ class ReluLeaky(LIF):
         return spk
 
     def forward(self, input_, mem=False):
-
         if hasattr(mem, "init_flag"):  # only triggered on first-pass
             mem = _SpikeTorchConv(mem, input_=input_)
         elif mem is False and hasattr(
