@@ -1,7 +1,7 @@
 from .neurons import _SpikeTensor, _SpikeTorchConv, LIF
 import torch
 
-class Leaky(LIF):
+class ReluLeaky(LIF):
     """
     First-order leaky integrate-and-fire neuron model.
     Input is assumed to be a current injection.
@@ -142,7 +142,7 @@ class Leaky(LIF):
         graded_spikes_factor=1.0,
         learn_graded_spikes_factor=False,
     ):
-        super(Leaky, self).__init__(
+        super(ReluLeaky, self).__init__(
             beta,
             threshold,
             spike_grad,
@@ -160,6 +160,20 @@ class Leaky(LIF):
 
         if self.init_hidden:
             self.mem = self.init_leaky()
+
+    def fire(self, mem):
+        """Generates graded relu spike if mem > threshold.
+        Returns graded_spk."""
+
+        if self.state_quant:
+            mem = self.state_quant(mem)
+
+        mem_shift = mem - self.threshold
+        spk = self.spike_grad(mem_shift)
+
+        spk = spk * self.graded_spikes_factor
+
+        return spk
 
     def forward(self, input_, mem=False):
 
@@ -247,7 +261,7 @@ class Leaky(LIF):
     def _leaky_forward_cases(self, mem):
         if mem is not False:
             raise TypeError(
-                "When `init_hidden=True`, Leaky expects 1 input argument."
+                "When `init_hidden=True`, ReluLeaky expects 1 input argument."
             )
 
     @classmethod
@@ -257,7 +271,7 @@ class Leaky(LIF):
         hidden state variables are instance variables."""
 
         for layer in range(len(cls.instances)):
-            if isinstance(cls.instances[layer], Leaky):
+            if isinstance(cls.instances[layer], ReluLeaky):
                 cls.instances[layer].mem.detach_()
 
     @classmethod
@@ -266,5 +280,5 @@ class Leaky(LIF):
         Intended for use where hidden state variables are instance variables.
         Assumes hidden states have a batch dimension already."""
         for layer in range(len(cls.instances)):
-            if isinstance(cls.instances[layer], Leaky):
+            if isinstance(cls.instances[layer], ReluLeaky):
                 cls.instances[layer].mem = _SpikeTensor(init_flag=False)

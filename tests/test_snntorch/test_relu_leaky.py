@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Tests for Leaky neuron."""
+"""Tests for ReluLeaky neuron."""
 
 import pytest
 import snntorch as snn
@@ -14,42 +14,42 @@ def input_():
 
 @pytest.fixture(scope="module")
 def leaky_instance():
-    return snn.Leaky(beta=0.5)
+    return snn.ReluLeaky(beta=0.5)
 
 
 @pytest.fixture(scope="module")
 def leaky_reset_zero_instance():
-    return snn.Leaky(beta=0.5, reset_mechanism="zero")
+    return snn.ReluLeaky(beta=0.5, reset_mechanism="zero")
 
 
 @pytest.fixture(scope="module")
 def leaky_reset_none_instance():
-    return snn.Leaky(beta=0.5, reset_mechanism="none")
+    return snn.ReluLeaky(beta=0.5, reset_mechanism="none")
 
 
 @pytest.fixture(scope="module")
 def leaky_hidden_instance():
-    return snn.Leaky(beta=0.5, init_hidden=True)
+    return snn.ReluLeaky(beta=0.5, init_hidden=True)
 
 
 @pytest.fixture(scope="module")
 def leaky_hidden_reset_zero_instance():
-    return snn.Leaky(beta=0.5, init_hidden=True, reset_mechanism="zero")
+    return snn.ReluLeaky(beta=0.5, init_hidden=True, reset_mechanism="zero")
 
 
 @pytest.fixture(scope="module")
 def leaky_hidden_reset_none_instance():
-    return snn.Leaky(beta=0.5, init_hidden=True, reset_mechanism="none")
+    return snn.ReluLeaky(beta=0.5, init_hidden=True, reset_mechanism="none")
 
 
 @pytest.fixture(scope="module")
 def leaky_hidden_learn_graded_instance():
-    return snn.Leaky(
+    return snn.ReluLeaky(
         beta=0.5, init_hidden=True, learn_graded_spikes_factor=True
     )
 
 
-class TestLeaky:
+class TestReluLeaky:
     def test_leaky(self, leaky_instance, input_):
         mem = leaky_instance.init_leaky()
 
