@@ -163,19 +163,14 @@ class ReluLeaky(LIF):
             self.mem = self.init_leaky()
 
     def fire(self, mem):
-        """Generates graded relu spike if mem > threshold.
-        Returns graded_spk."""
+        """Generate graded relu spike if mem > threshold.
 
-        # if self.state_quant:
-        #     mem = self.state_quant(mem)
-
+        Returns graded_spk.
+        """
         mem_shift = mem - self.threshold
         spk = self.spike_grad(mem_shift)
 
-        # spk = spk * self.graded_spikes_factor
-
-        # return torch.tanh(mem)
-        return torch.relu(mem) * spk
+        return mem * spk
 
     def forward(self, input_, mem=False):
         if hasattr(mem, "init_flag"):  # only triggered on first-pass
