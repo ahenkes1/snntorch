@@ -169,12 +169,13 @@ class ReluLeaky(LIF):
         # if self.state_quant:
         #     mem = self.state_quant(mem)
 
-        # mem_shift = mem - self.threshold
-        # spk = self.spike_grad(mem_shift)
+        mem_shift = mem - self.threshold
+        spk = self.spike_grad(mem_shift)
 
         # spk = spk * self.graded_spikes_factor
 
-        return mem
+        # return torch.tanh(mem)
+        return torch.relu(mem) * spk
 
     def forward(self, input_, mem=False):
         if hasattr(mem, "init_flag"):  # only triggered on first-pass
