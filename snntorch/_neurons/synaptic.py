@@ -49,7 +49,7 @@ class Synaptic(LIF):
 
         # Define Network
         class Net(nn.Module):
-            def __init__(self):
+            def __init__(self, num_inputs, num_hidden, num_outputs):
                 super().__init__()
 
                 # initialize layers
@@ -270,7 +270,7 @@ class Synaptic(LIF):
 
     def _base_state_function_hidden(self, input_):
         base_fn_syn = self.alpha.clamp(0, 1) * self.syn + input_
-        base_fn_mem = self.beta.clamp(0, 1) * self.mem + input_
+        base_fn_mem = self.beta.clamp(0, 1) * self.mem + base_fn_syn
         return base_fn_syn, base_fn_mem
 
     def _base_state_reset_zero_hidden(self, input_):
