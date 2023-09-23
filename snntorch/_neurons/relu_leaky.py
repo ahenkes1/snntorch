@@ -1,10 +1,11 @@
 from .neurons import _SpikeTensor, _SpikeTorchConv, LIF
-import torch
+
+# import torch
 
 
 class ReluLeaky(LIF):
-    """
-    First-order leaky integrate-and-fire neuron model.
+    r"""First-order leaky integrate-and-fire neuron model.
+
     Input is assumed to be a current injection.
     Membrane potential decays exponentially with rate beta.
     For :math:`U[T] > U_{\\rm thr} ⇒ S[T+1] = 1`.
@@ -143,6 +144,7 @@ class ReluLeaky(LIF):
         graded_spikes_factor=1.0,
         learn_graded_spikes_factor=False,
     ):
+        """Initialize neuron."""
         super(ReluLeaky, self).__init__(
             beta,
             threshold,
@@ -173,6 +175,7 @@ class ReluLeaky(LIF):
         return mem * spk
 
     def forward(self, input_, mem=False):
+        """Forward pass."""
         if hasattr(mem, "init_flag"):  # only triggered on first-pass
             mem = _SpikeTorchConv(mem, input_=input_)
         elif mem is False and hasattr(
@@ -262,19 +265,22 @@ class ReluLeaky(LIF):
 
     @classmethod
     def detach_hidden(cls):
-        """Returns the hidden states, detached from the current graph.
-        Intended for use in truncated backpropagation through time where
-        hidden state variables are instance variables."""
+        """Return the hidden states, detached from the current graph.
 
+        Intended for use in truncated backpropagation through time where
+        hidden state variables are instance variables.
+        """
         for layer in range(len(cls.instances)):
             if isinstance(cls.instances[layer], ReluLeaky):
                 cls.instances[layer].mem.detach_()
 
     @classmethod
     def reset_hidden(cls):
-        """Used to clear hidden state variables to zero.
+        """Clear hidden state variables to zero.
+
         Intended for use where hidden state variables are instance variables.
-        Assumes hidden states have a batch dimension already."""
+        Assumes hidden states have a batch dimension already.
+        """
         for layer in range(len(cls.instances)):
             if isinstance(cls.instances[layer], ReluLeaky):
                 cls.instances[layer].mem = _SpikeTensor(init_flag=False)
